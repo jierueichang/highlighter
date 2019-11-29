@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Highlighter</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body>
+        <style>
+            html,body{
+                font-family: monospace;
+                height:100%;
+            }
+            #main{
+                display:grid;
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                padding: 0px;
+                height: 90%;
+                overflow-y:scroll;
+            }
+            textarea{
+                border:none;
+                height: 100%;
+                margin-left: 10px;
+                background-color:rgb(246, 251, 255)
+            }
+            #outline{
+                height: 100%;
+                overflow-y:scroll;
+                background-color:lightslategray;
+            }
+            #outline::-webkit-scrollbar,textarea::-webkit-scrollbar{ /* WebKit */
+                width: 0;
+                height: 0;
+            }
+            .card{
+                border-radius:10px;
+                padding:10px;
+                margin:10px;
+                box-shadow:5px 5px 5px #383838;
+                display: inline-block;
+                font-size: 10pt;
+            }
+            .card:hover{
+                font-size: 12pt;
+            }
+            #defcard{
+                background-color:aquamarine;
+            }
+            #classcard{
+                background-color:lightgreen;
+            }
+            #elifcard{
+                background-color:rgb(253, 255, 127);
+            }
+            #ifcard{
+                background-color:rgb(238, 216, 144);
+            }
+            #forcard{
+                background-color:rgb(197, 107, 197);
+            }
+            #boilcard{
+                background-color:rgb(136, 136, 136);
+            }
+            #whilecard{
+                background-color:rgb(156, 215, 218);
+            }
+            #importcard{
+                background-color:rgb(233, 167, 167);
+            }
+            #smallcard{
+                font-size: 5pt;
+            }
+            #smallcard:hover{
+                font-size: 10pt;
+            }
+            .container {
+                -ms-overflow-style: none;  /* Internet Explorer 10+ */
+                scrollbar-width: none;  /* Firefox */
+            }
+            .container::-webkit-scrollbar { 
+                display: none;  /* Safari and Chrome */
+            }
+        </style>
+        <nav class="navbar navbar-dark bg-dark">
+                <a class="navbar-brand" href="#">Highlighter</a>
+                <p class='text-muted'>A Graphical Python Outline Generator</p>
+        </nav>
+        <div id='main' class='container'>
+            <textarea id='rawcode' spellcheck=false onChange='render()'>Type code here...</textarea>
+            <div id='outline'>
+                <div class='card' id='boilcard'>
+                    <p>Type some code to begin</p>
+                </div>
+            </div>
+            <script>
+                function parse(){
+                    lines = document.getElementById('rawcode').value.split('\n');
+                    //alert(lines);
+                    output=[];
+                    signatures = ['def ','class ','if ','for ','while ','import ']
+                    var unhighlighted = '';
+                    for(var i=0;i<lines.length;i++){
+                        var found = false;
+                        for(var j=0;j<signatures.length;j++)
+                            if(lines[i].includes(signatures[j])){
+                                if(unhighlighted != ''){
+                                    output.push(unhighlighted.replace(/\n$/,''));
+                                    unhighlighted = '';
+                                }
+                                output.push(lines[i]);
+                                found=true;
+                                break;
+                            }
+                        if(found==false){
+                            unhighlighted+=lines[i]+'\n';
+                        }
+                    }
+                    if(unhighlighted!=''){
+                        output.push(unhighlighted.replace(/\n$/,''));
+                    }
+                    if(output==['']){
+                        output=['Type some code to begin...'];
+                    }
+                    return(output);
+                }
+                function render(){
+                    output=parse();
+                    //alert(output);
+                    outline=document.getElementById('outline');
+                    outline.innerHTML='';
+                    types = ['def ','class ','for ','if ','elif ','if __name__','import ','while '];
+                    var indent = 0;
+                    var previndent = 0;
+                    for(var i=0;i<output.length;i++){
+                        if(output[i].includes('if __name__')){
+                            var type = 'boilcard';
+                        }
+                        else{
+                            var found=false;
+                            for(var j=0;j<types.length;j++){
+                                if(output[i].includes(types[j])){
+                                    var type = `${types[j].trim()}card`;
+                                    found = true;
+                                }
+                            }
+                            if(found==false){
+                                var type='smallcard';
+                            }
+                        }
+                        indent = output[i].search(/\S/)*10+10;
+                        outline.innerHTML+=`
+                        <div class='card' id=${type} contentEditable style='margin-left:${indent};'>
+                            <p spellcheck=false>${output[i]}</p>
+                        </div>
+                        <br>
+                        `;
+                        /*if(previndent>indent){
+                            outline.innerHTML+='</div>';
+                        }*/
+                        previndent = indent;
+                    }
+                }
+                function convert_to_code(){
+                    alert(hi);
+                    g = document.getElementById('outline').innerHTML.split('\n');
+                    var result = '';
+                    for(var i=0;i<g.length;i++){
+                        if(g[i].includes('<p')){
+                            result+=g[i].replace("<p spellcheck=false>",'').replace('</p>','')+'\n';
+                        }
+                    }
+                    document.getElementById('rawcode').innerHTML=result;
+                }
+                convert_to_code();
+                alert('hihi');
+                //setInterval(render,1000);
+            </script>
+        </div>
+    </body>
+</html>
