@@ -114,11 +114,11 @@
                                 break;
                             }
                         if(found==false){
-                            unhighlighted+=lines[i]+'\n';
+                            unhighlighted+=lines[i]+'<hr>';
                         }
                     }
                     if(unhighlighted!=''){
-                        output.push(unhighlighted.replace(/\n$/,''));
+                        output.push(unhighlighted.replace);
                     }
                     if(output==['']){
                         output=['Type some code to begin...'];
