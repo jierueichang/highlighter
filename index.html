@@ -101,20 +101,32 @@
                     output=[];
                     signatures = ['def ','class ','if ','for ','while ','import ']
                     var unhighlighted = '';
+                    var unhighlighted_indent = false;
                     for(var i=0;i<lines.length;i++){
                         var found = false;
-                        for(var j=0;j<signatures.length;j++)
+                        for(var j=0;j<signatures.length;j++){
                             if(lines[i].includes(signatures[j])){
-                                if(unhighlighted != ''){
+                                if(unhighlighted != '' && unhighlighted != '\n'){
                                     output.push(unhighlighted);
                                     unhighlighted = '';
+                                    unhighlighted_indent = false;
                                 }
                                 output.push(lines[i]);
                                 found=true;
                                 break;
                             }
                         if(found==false){
-                            unhighlighted+=lines[i]+'<br>';
+                            if (unhighlighted_indent == false){
+                                unhighlighted_indent = lines[i].search('/\S/');
+                            }
+                            else if(unhighlighted_indent != lines[i].search('/\S/')){
+                                output.push(unhighlighted);
+                                unhighlighted = '';
+                            }
+                            else{
+                                unhighlighted+=lines[i]+'<br>';
+                                unhighlighted_indent = lines[i].search('/\S/');
+                            }
                         }
                     }
                     if(unhighlighted!=''){
