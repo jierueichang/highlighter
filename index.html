@@ -106,7 +106,7 @@
                         for(var j=0;j<signatures.length;j++)
                             if(lines[i].includes(signatures[j])){
                                 if(unhighlighted != ''){
-                                    output.push(unhighlighted);
+                                    output.push(unhighlighted+'<br>');
                                     unhighlighted = '';
                                 }
                                 output.push(lines[i]);
