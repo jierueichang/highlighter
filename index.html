@@ -106,7 +106,7 @@
                         for(var j=0;j<signatures.length;j++)
                             if(lines[i].includes(signatures[j])){
                                 if(unhighlighted != ''){
-                                    output.push(unhighlighted+'<br>');
+                                    output.push(unhighlighted);
                                     unhighlighted = '';
                                 }
                                 output.push(lines[i]);
@@ -114,7 +114,7 @@
                                 break;
                             }
                         if(found==false){
-                            unhighlighted+=lines[i]+'<hr>';
+                            unhighlighted+=lines[i]+'<br>';
                         }
                     }
                     if(unhighlighted!=''){
